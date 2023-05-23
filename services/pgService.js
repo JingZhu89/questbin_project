@@ -14,7 +14,7 @@ db.connect()
 const insertUUID = async (data) => {
   return await db.none('INSERT INTO requestbin (uuid) VALUES(${uuid})', {
     uuid: data.uuid
-  })
+  });
 }
 
 //data object {uuid, request_body}
@@ -28,17 +28,17 @@ const insertRequestBody = async (data) => {
 
 //get all uuids in requestbin
 const getAlluuids = async () => {
-  return await db.many('SELECT uuid FROM requestbin')
+  return await db.many('SELECT uuid FROM requestbin');
 }
 
 const getUuidData = async (uuid) => {
   return await db.many('SELECT request_body FROM request r LEFT OUTER JOIN requestbin rb ' + 
     'ON r.requestbin_id = rb.id ' + 
-    'WHERE rb.uuid = $1', uuid)
+    'WHERE rb.uuid = $1', uuid);
 }
 
 const getRequestbinID = async (uuid) => {
-  const response = await db.one('SELECT id FROM requestbin WHERE uuid = ${uuid}', {uuid : uuid})
+  const response = await db.one('SELECT id FROM requestbin WHERE uuid = ${uuid}', {uuid : uuid});
   return response.id
 }
 
