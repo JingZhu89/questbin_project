@@ -15,7 +15,6 @@ CREATE TABLE request (
     ON DELETE CASCADE
 );
 
-
 INSERT INTO requestbin (uuid) VALUES ('testuuidone');
 INSERT INTO requestbin (uuid) VALUES ('testuuidtwo');
 INSERT INTO requestbin (uuid) VALUES ('testuuidthree');
