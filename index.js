@@ -12,7 +12,7 @@ app.use(cors());
 let prefix 
 if (process.env.NODE_ENV === 'development') {
   prefix = process.env.DEVURL
-} else if (process.env.NODE_ENV === 'production') {
+} else {
   prefix = process.env.PRODURL
 }
 
