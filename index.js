@@ -3,11 +3,17 @@ dotenv.config()
 const cors = require('cors');
 const express = require('express');
 const pgService = require('./services/pgService.js')
+//const bodyParser = require("body-parser");
+const router = express.Router();
 const crypto = require('crypto');
 // const mgService = require('./mgService.js')
 const app = express();
 app.use(express.json());
+//app.use("/", router);
 app.use(cors());
+//app.use(bodyParser.json());
+
+//const jsonParser = bodyParser.json()
 
 let prefix 
 if (process.env.NODE_ENV === 'development') {
@@ -21,6 +27,7 @@ app.get('/createuuid', async (req, res) => {
   const uuid = crypto.randomUUID()
   try {
     const dbResponse = await pgService.insertUUID({uuid: uuid})
+	console.log(dbResponse);
     res.send(prefix + uuid);
   } catch(err) {
     res.send('Opps ' + err.message)
