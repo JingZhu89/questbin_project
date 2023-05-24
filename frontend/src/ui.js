@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
+const baseURL = "/"
 
 const NewEndpoint = (props) => {
   const [copyText, setCopyText] = useState('Copy');
@@ -24,7 +25,7 @@ const RequestList = (props) => {
   useEffect(() => {
 	async function fetchRequests() {
       let result = await fetch(
-      'http://localhost:3001/requests/' + props.endpoint, {
+      baseURL + 'requests/' + props.endpoint, {
       method: "get",
       });
 	  result = await result.text();
@@ -61,7 +62,7 @@ const EndpointList = (props) => {
 
   useEffect(() => {
 	async function fetchEndpoints() {
-    fetch("http://localhost:3001/uuids")
+    fetch(baseURL + "uuids")
          .then(res => res.json())
 		 .then(data => setEndpoints(data));
 	};
@@ -101,7 +102,7 @@ const MainScreen = () => {
   const generateURL = async (event) => {
     event.preventDefault();
     let result = await fetch(
-      'http://localhost:3001/createuuid', {
+      baseURL + 'createuuid', {
       method: "get",
     })
     result = await result.text();
