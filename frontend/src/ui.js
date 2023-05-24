@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
-const baseURL = "/"
+const baseURL = "http://localhost:3001/"
 
 const NewEndpoint = (props) => {
   const [copyText, setCopyText] = useState('Copy');
@@ -68,7 +68,7 @@ const EndpointGenerator = (props) => {
   const generateURL = async (event) => {
     event.preventDefault();
     let result = await fetch(
-      baseURL + '/createuuid', {
+      baseURL + 'createuuid', {
       method: "get",
     })
     result = await result.text();
