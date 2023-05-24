@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
+const baseURL = "/"
 
 const NewEndpoint = (props) => {
   const [copyText, setCopyText] = useState('Copy');
@@ -12,31 +13,34 @@ const NewEndpoint = (props) => {
 
   return (
     <div>
-      <p>Endpoint created!</p>
-	  <p>Your URL is: {props.endpoint} <span className="copytext" onClick={copyUrl}>({copyText})</span></p>
+      <p>Your endpoint URL:</p>
+      <p className="endpoint" >{props.endpoint} <span className="copytext" onClick={copyUrl}>({copyText})</span></p>
     </div>
   )
 }
 
 const RequestList = (props) => {
   const [reqs, setReqs] = useState([]);
+  const [style, setStyle] = useState('reqs');
 
   useEffect(() => {
-	async function fetchRequests() {
+    async function fetchRequests() {
       let result = await fetch(
-      'http://localhost:3001/requests/' + props.endpoint, {
-      method: "get",
+        baseURL + 'requests/' + props.endpoint, {
+        method: "get",
       });
-	  result = await result.text();
+      result = await result.text();
       try {
         let json = JSON.parse(result);
-		setReqs(json);
+        setReqs(json);
+        setStyle('reqs');
       } catch(err) {
-	    setReqs([]);
+        setStyle('');
+        setReqs([]);
       }
-	}
-	fetchRequests();
-	}, [props.endpoint]);
+    }
+    fetchRequests();
+  }, [props.endpoint]);
 
   let output = '';
   if (reqs.length === 0) {
@@ -45,14 +49,49 @@ const RequestList = (props) => {
   else {
     output = reqs.map(req => (
       <JsonView key={req} src={req} />
-	));
+    ));
   }
 
   return (
-	<div>
-	{output}
-	</div>
+    <div>
+      <hr />
+      <h4>Requests:</h4>
+      <p className={style} >{output}</p>
+    </div>
   )
+}
+
+const EndpointGenerator = (props) => {
+  const [newEndpoint, setNewEndpoint] = useState('');
+  const [buttonText, setButtonText] = useState('Create new endpoint URL');
+
+  const generateURL = async (event) => {
+    event.preventDefault();
+    let result = await fetch(
+      baseURL + '/createuuid', {
+      method: "get",
+    })
+    result = await result.text();
+    if (result) {
+      setNewEndpoint(result);
+      setButtonText('Endpoint generated!');
+      props.updateEndpoints(!props.changed);
+      }
+  };
+
+  let url = '';
+  if (newEndpoint) {
+    url = <NewEndpoint endpoint={newEndpoint} />
+  }
+
+  return (
+  <div>
+    <form onSubmit={generateURL}>
+      <button type="submit">{buttonText}</button>
+    </form>
+    <p>{url}</p>
+  </div>
+  );
 }
 
 const EndpointList = (props) => {
@@ -60,65 +99,47 @@ const EndpointList = (props) => {
   const [chosenEndpoint, setChosenEndpoint] = useState('');
 
   useEffect(() => {
-	async function fetchEndpoints() {
-    fetch("http://localhost:3001/uuids")
+    async function fetchEndpoints() {
+      fetch(baseURL + 'uuids')
          .then(res => res.json())
-		 .then(data => setEndpoints(data));
-	};
-	fetchEndpoints();
-	}, [props.changed]);
-	
+         .then(data => setEndpoints(data));
+    };
+    fetchEndpoints();
+  }, [props.changed]);
+  
   const getUuid = (event) => {
-	event.preventDefault();
+    event.preventDefault();
     props.selectEndpoint(chosenEndpoint);
   }
   
   const chooseUuid = (event) => {
     setChosenEndpoint(event.target.value);
   }
-	
+  
   return (
     <div>
-	<p>View requests</p>
-	<form onSubmit={getUuid}>
-	<select value={chosenEndpoint} onChange={chooseUuid}>
-	<option value="">Choose an endpoint:</option>
-	{endpoints.map(endpoint => (
-      <option key={endpoint.uuid} value={endpoint.uuid}> {endpoint.uuid}</option>
-	))}
-	</select>
-	<p><button type="submit">View</button></p>
-	</form>
-	</div>
+      <hr />
+      <h4>View requests</h4>
+      <form onSubmit={getUuid}>
+        <select value={chosenEndpoint} onChange={chooseUuid}>
+        <option value="">Choose an endpoint:</option>
+        {endpoints.map(endpoint => (
+          <option key={endpoint.uuid} value={endpoint.uuid}> {endpoint.uuid}</option>
+        ))}
+        </select>
+        <p><button type="submit">View</button></p>
+      </form>
+    </div>
   );
 }
 
 const MainScreen = () => {
-  const [newEndpoint, setNewEndpoint] = useState('');
   const [endpointsChanged, setEndpointsChanged] = useState(false);
   const [chosenEndpoint, setChosenEndpoint] = useState('');
-
-  const generateURL = async (event) => {
-    event.preventDefault();
-    let result = await fetch(
-      'http://localhost:3001/createuuid', {
-      method: "get",
-    })
-    result = await result.text();
-    if (result) {
-      setNewEndpoint(result);
-	  setEndpointsChanged(!endpointsChanged);
-    }
-  };
   
   const selectEndpoint = (selected) => {
     setChosenEndpoint(selected);
   };
-
-  let url = '';
-  if (newEndpoint) {
-    url = <NewEndpoint endpoint={newEndpoint} />
-  }
   
   let reqs = '';
   if (chosenEndpoint) {
@@ -128,13 +149,11 @@ const MainScreen = () => {
   return (
     <div>
       <h3>Questbin</h3>
-	  <hr />
-      <form onSubmit={generateURL}>
-        <button type="submit">Create new endpoint URL</button>
-      </form>
-      <p>{url}</p>
-	  <EndpointList selectEndpoint={selectEndpoint} changed={endpointsChanged} />
-	  {reqs}
+      <p>Generate an endpoint to collect HTTP requests.</p>
+      <hr />
+      <EndpointGenerator changed={endpointsChanged} updateEndpoints={setEndpointsChanged} />
+      <EndpointList selectEndpoint={selectEndpoint} changed={endpointsChanged} />
+      {reqs}
     </div>
   );
 }

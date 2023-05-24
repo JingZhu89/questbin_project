@@ -1,4 +1,5 @@
 body {
+  display: flex;
   margin-left: 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -12,9 +13,56 @@ code {
     monospace;
 }
 
+button, select {
+  background-color: #DDDDEE;
+  border: 2px;
+  border-style: solid;
+  border-color: #4444FF; 
+  border-radius: 5px;  
+  padding: 5px;
+  font-size: 0.85em;
+}
+
+button {
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+button:hover {
+  background-color: #BBBBEE;
+}
+
 .copytext {
-  color: #4444FF;
+  color: #1133FF;
   font-weight: 550;
   font-size: 0.85em;
   margin-left: 10px;
+}
+
+.message {
+  background-color: #FFEEEE;
+  border-radius: 10px;
+  padding: 0px 0px 2px 5px;
+}
+
+.endpoint {
+  background-color: #EFEFFF;
+  border: 2px;
+  border-style: solid;
+  border-color: #4444FF;
+  border-radius: 5px;
+  font-weight: 500;
+  margin-right: 20px;
+  padding: 5px;
+}
+
+.reqs {
+  background-color: #EFEFFF;
+  border: 1px;
+  border-style: solid;
+  border-color: #4444FF;
+  border-radius: 5px;
+  font-weight: 500;
+  margin-right: 20px;
+  padding: 5px;
 }
