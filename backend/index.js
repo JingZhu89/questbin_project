@@ -9,42 +9,49 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-let prefix 
+let prefix
 if (process.env.NODE_ENV === 'development') {
   prefix = process.env.DEVURL
 } else {
   prefix = process.env.PRODURL
 }
 
-//get new uuid & insert to reqesutbin table
+//get new uuid & insert to requestbin table
 app.get('/createuuid', async (req, res) => {
   const uuid = crypto.randomUUID()
   try {
-    const dbResponse = await pgService.insertUUID({uuid: uuid})
+    const dbResponse = await pgService.insertUUID({ uuid: uuid })
     res.send(prefix + uuid);
-  } catch(err) {
+  } catch (err) {
     res.send('Opps ' + err.message)
   }
 })
 
 //send body
 app.post('/questbin/:uuid', async (req, res) => {
-  const uuid = req.params.uuid
-  const request_body = req.body
+  const uuid = req.params.uuid;
+  const requestData = {
+    body: req.body,
+    headers: req.headers,
+    method: req.method,
+    url: req.originalUrl,
+    query: req.query
+  };
+
   try {
-    const dbResponse = await pgService.insertRequestBody({uuid, request_body})
+    const dbResponse = await pgService.insertRequestData({ uuid, requestData })
     res.sendStatus(200);
-  } catch(err) {
+  } catch (err) {
     res.send('Opps ' + err.message)
   }
-})
+});
 
 //get all uuid
 app.get('/uuids', async (req, res) => {
   try {
     const dbResponse = await pgService.getAlluuids()
     res.send(dbResponse);
-  } catch(err) {
+  } catch (err) {
     res.send('Opps ' + err.message)
   }
 })
@@ -55,7 +62,7 @@ app.get('/requests/:uuid', async (req, res) => {
   try {
     const dbResponse = await pgService.getUuidData(uuid)
     res.send(dbResponse);
-  } catch(err) {
+  } catch (err) {
     res.send('Opps ' + err.message)
   }
 })
