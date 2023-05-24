@@ -8,6 +8,7 @@ const crypto = require('crypto');
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(express.static('build'));
 
 let prefix
 if (process.env.NODE_ENV === 'development') {
