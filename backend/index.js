@@ -13,16 +13,6 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static('build'));
 
-const io = new Server(httpsServer, {
-  cors: {
-    origins: "*"
-  }
-});
-
-io.on("connection", (socket) => {
-  console.log("socket.io connected");
-});
-
 let prefix
 if (process.env.NODE_ENV === 'development') {
   prefix = process.env.DEVURL;
@@ -35,6 +25,16 @@ if (process.env.NODE_ENV === 'development') {
   });
   httpsServer.listen(3002);
 }
+
+const io = new Server(httpsServer, {
+  cors: {
+    origins: "*"
+  }
+});
+
+io.on("connection", (socket) => {
+  console.log("socket.io connected");
+});
 
 //get new uuid & insert to requestbin table
 app.get('/createuuid', async (req, res) => {
