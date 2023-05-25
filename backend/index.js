@@ -1,3 +1,4 @@
+const { Server } = require("socket.io");
 const dotenv = require('dotenv');
 dotenv.config()
 const cors = require('cors');
@@ -10,7 +11,17 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static('build'));
 
-app.use(express.static('build'))
+const io = new Server({
+  cors: {
+    origins: ["https://github.com", "http://localhost:3001"]
+  }
+});
+
+io.on("connection", (socket) => {
+  console.log("socket.io connected");
+});
+
+io.listen(3002);
 
 let prefix
 if (process.env.NODE_ENV === 'development') {
@@ -32,6 +43,8 @@ app.get('/createuuid', async (req, res) => {
 
 //send body
 app.post('/questbin/:uuid', async (req, res) => {
+  console.log("received post");
+  io.sockets.emit("new", req.params.uuid);
   const uuid = req.params.uuid;
   const requestData = {
     body: req.body,
