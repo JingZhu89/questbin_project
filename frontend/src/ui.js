@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === 'development') {
   socket = io("ws://localhost:3002")
   baseURL = "http://localhost:3001/"
 } else {
-  socket = io("wss://app.jingzwork.space")
+  socket = io("wss://app.jingzwork.space:3002")
   baseURL = "/"
 }
 
