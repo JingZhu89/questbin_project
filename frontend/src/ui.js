@@ -3,9 +3,16 @@ import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
 import { io } from "socket.io-client";
 
-const socket = io("wss://143.244.144.133:3002");
+let socket;
+let baseURL;
 
-const baseURL = "/"
+if (process.env.NODE_ENV === 'development') {
+  socket = io("ws://localhost:3002")
+  baseURL = "http://localhost:3001/"
+} else {
+  socket = io("wss://143.244.144.133:3002")
+  baseURL = "/"
+}
 
 const NewEndpoint = (props) => {
   const [copyText, setCopyText] = useState('Copy');

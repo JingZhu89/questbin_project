@@ -1,4 +1,6 @@
-const { Server } = require("socket.io");
+const { Server } = require('socket.io');
+const { readFileSync } = require('fs');
+const { createServer } = require('https');
 const dotenv = require('dotenv');
 dotenv.config()
 const cors = require('cors');
@@ -21,13 +23,17 @@ io.on("connection", (socket) => {
   console.log("socket.io connected");
 });
 
-io.listen(3002);
-
 let prefix
 if (process.env.NODE_ENV === 'development') {
-  prefix = process.env.DEVURL
+  prefix = process.env.DEVURL;
+  io.listen(3002);
 } else {
-  prefix = process.env.PRODURL
+  prefix = process.env.PRODURL;
+  const httpsServer = createServer({
+    key: readFileSync(process.env.SSLKEY),
+    cert: readFileSync(process.env.SSLCERT)
+  });
+  httpsServer.listen(3002);
 }
 
 //get new uuid & insert to requestbin table
@@ -43,7 +49,6 @@ app.get('/createuuid', async (req, res) => {
 
 //send body
 app.post('/questbin/:uuid', async (req, res) => {
-  console.log("received post");
   io.sockets.emit("new", req.params.uuid);
   const uuid = req.params.uuid;
   const requestData = {
