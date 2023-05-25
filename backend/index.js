@@ -15,7 +15,7 @@ app.use(express.static('build'));
 
 const io = new Server({
   cors: {
-    origins: ["https://github.com", "http://localhost:3001"]
+    origins: "*"
   }
 });
 
@@ -29,7 +29,6 @@ if (process.env.NODE_ENV === 'development') {
   io.listen(3002);
 } else {
   prefix = process.env.PRODURL;
-  console.log(process.env.SSLKEY)
   const httpsServer = createServer({
     key: readFileSync(process.env.SSLKEY),
     cert: readFileSync(process.env.SSLCERT)
