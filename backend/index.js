@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static('build'));
 
-const io = new Server({
+const io = new Server(httpsServer, {
   cors: {
     origins: "*"
   }
