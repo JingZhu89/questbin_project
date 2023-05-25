@@ -29,6 +29,7 @@ if (process.env.NODE_ENV === 'development') {
   io.listen(3002);
 } else {
   prefix = process.env.PRODURL;
+  console.log(process.env.SSLKEY)
   const httpsServer = createServer({
     key: readFileSync(process.env.SSLKEY),
     cert: readFileSync(process.env.SSLCERT)
