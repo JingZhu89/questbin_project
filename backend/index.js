@@ -13,7 +13,7 @@ app.use(express.static('build'));
 
 const io = new Server({
   cors: {
-    origin: "http://localhost:3000"
+    origins: ["https://github.com", "http://localhost:3001"]
   }
 });
 

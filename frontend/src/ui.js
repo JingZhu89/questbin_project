@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 
 const socket = io("ws://localhost:3002");
 
-const baseURL = "http://localhost:3001/"
+const baseURL = "/"
 
 const NewEndpoint = (props) => {
   const [copyText, setCopyText] = useState('Copy');
