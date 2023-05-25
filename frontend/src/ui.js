@@ -3,7 +3,7 @@ import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
 import { io } from "socket.io-client";
 
-const socket = io("ws://143.244.144.133:3002");
+const socket = io("wss://143.244.144.133:3002");
 
 const baseURL = "/"
 
